@@ -28,4 +28,7 @@ public:
 	void InitPool();
 	AProjectile* GetPooledObstacle();
 	void ReturnToPool(AProjectile* _Obstacle);
+	void ExpandPool(int32 AdditionalCount, int32 MaxSize);
+	int32 GetActiveCount() const;
+	int32 GetPoolSize() const { return ObstaclePool.Num(); }
 };

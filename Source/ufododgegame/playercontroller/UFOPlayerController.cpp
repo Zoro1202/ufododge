@@ -46,6 +46,19 @@ void AUFOPlayerController::SetHUDHealth(float Health, float MaxHealth)
 	}
 }
 
+void AUFOPlayerController::SetHUDMeteorCount(int32 Count)
+{
+	HUD = HUD == nullptr ? Cast<AUFOHUD>(GetHUD()) : HUD;
+	bool bHUDValid = HUD &&
+		HUD->CharacterOverlay &&
+		HUD->CharacterOverlay->MeteorCount;
+	if (bHUDValid)
+	{
+		FString CountText = FString::Printf(TEXT("운석: %d"), Count);
+		HUD->CharacterOverlay->MeteorCount->SetText(FText::FromString(CountText));
+	}
+}
+
 void AUFOPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();

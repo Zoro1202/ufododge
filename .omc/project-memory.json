@@ -1,0 +1,269 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1776628634668,
+  "projectRoot": "D:\\gameMake\\UE5\\ufododge",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "Binaries": {
+      "path": "Binaries",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1776628634654,
+      "keyFiles": []
+    },
+    "Config": {
+      "path": "Config",
+      "purpose": "Configuration files",
+      "fileCount": 4,
+      "lastAccessed": 1776628634654,
+      "keyFiles": [
+        "DefaultEditor.ini",
+        "DefaultEngine.ini",
+        "DefaultGame.ini",
+        "DefaultInput.ini"
+      ]
+    },
+    "Content": {
+      "path": "Content",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1776628634654,
+      "keyFiles": []
+    },
+    "DerivedDataCache": {
+      "path": "DerivedDataCache",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1776628634654,
+      "keyFiles": []
+    },
+    "Intermediate": {
+      "path": "Intermediate",
+      "purpose": null,
+      "fileCount": 5,
+      "lastAccessed": 1776628634655,
+      "keyFiles": [
+        "CachedAssetRegistryDiscovery.bin",
+        "CachedAssetRegistry_0.bin",
+        "TargetInfo.Engine.json",
+        "TargetInfo.json",
+        "TargetInfo.ufododgegame.json"
+      ]
+    },
+    "Saved": {
+      "path": "Saved",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1776628634655,
+      "keyFiles": []
+    },
+    "Source": {
+      "path": "Source",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1776628634655,
+      "keyFiles": [
+        "ufododgegame.Target.cs",
+        "ufododgegameEditor.Target.cs"
+      ]
+    },
+    "Intermediate\\Build": {
+      "path": "Intermediate\\Build",
+      "purpose": "Build output",
+      "fileCount": 2,
+      "lastAccessed": 1776628634656,
+      "keyFiles": [
+        "SourceFileCache.bin",
+        "XmlConfigCache.bin"
+      ]
+    },
+    "Saved\\Config": {
+      "path": "Saved\\Config",
+      "purpose": "Configuration files",
+      "fileCount": 0,
+      "lastAccessed": 1776628634656,
+      "keyFiles": []
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "Source\\ufododgegame\\gamestate\\UFOGameState.cpp",
+      "accessCount": 13,
+      "lastAccessed": 1776639008241,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\Obstacle\\Meteo.cpp",
+      "accessCount": 10,
+      "lastAccessed": 1776640294156,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\character\\UFOCharacter.cpp",
+      "accessCount": 9,
+      "lastAccessed": 1776631891331,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\gamestate\\UFOGameState.h",
+      "accessCount": 9,
+      "lastAccessed": 1776636457680,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\Obstacle\\Projectile.cpp",
+      "accessCount": 7,
+      "lastAccessed": 1776638399936,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\character\\UFOCharacter.h",
+      "accessCount": 6,
+      "lastAccessed": 1776631871960,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\Obstacle\\Meteo.h",
+      "accessCount": 6,
+      "lastAccessed": 1776640287763,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\Obstacle\\Projectile.h",
+      "accessCount": 5,
+      "lastAccessed": 1776637958153,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\Obstacle\\ObstacleSpawnVolume.cpp",
+      "accessCount": 5,
+      "lastAccessed": 1776638123248,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\Obstacle\\ObstaclePoolManager.cpp",
+      "accessCount": 4,
+      "lastAccessed": 1776636321233,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\ufododgegame.Build.cs",
+      "accessCount": 4,
+      "lastAccessed": 1776638492625,
+      "type": "file"
+    },
+    {
+      "path": "",
+      "accessCount": 3,
+      "lastAccessed": 1776636143763,
+      "type": "directory"
+    },
+    {
+      "path": "Source\\ufododgegame\\Obstacle\\ObstacleSpawnVolume.h",
+      "accessCount": 3,
+      "lastAccessed": 1776636272664,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\Obstacle\\ObstaclePoolManager.h",
+      "accessCount": 3,
+      "lastAccessed": 1776636307496,
+      "type": "file"
+    },
+    {
+      "path": "Source",
+      "accessCount": 2,
+      "lastAccessed": 1776630602423,
+      "type": "directory"
+    },
+    {
+      "path": "Source\\ufododgegame\\Pickup\\Pickup.h",
+      "accessCount": 2,
+      "lastAccessed": 1776631830522,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\Pickup\\Pickup.cpp",
+      "accessCount": 2,
+      "lastAccessed": 1776631837643,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\playercontroller\\UFOPlayerController.h",
+      "accessCount": 2,
+      "lastAccessed": 1776635858905,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\playercontroller\\UFOPlayerController.cpp",
+      "accessCount": 2,
+      "lastAccessed": 1776635869786,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\Pickup\\HealthPickup.h",
+      "accessCount": 1,
+      "lastAccessed": 1776631845595,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\Pickup\\PowerupPickup.h",
+      "accessCount": 1,
+      "lastAccessed": 1776631847285,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\Pickup\\HealthPickup.cpp",
+      "accessCount": 1,
+      "lastAccessed": 1776631855224,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\Pickup\\PowerupPickup.cpp",
+      "accessCount": 1,
+      "lastAccessed": 1776631856952,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\playercontroller\\CharacterOverlay.h",
+      "accessCount": 1,
+      "lastAccessed": 1776635802832,
+      "type": "file"
+    },
+    {
+      "path": "Source\\ufododgegame\\playercontroller\\UFOHUD.h",
+      "accessCount": 1,
+      "lastAccessed": 1776635803914,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

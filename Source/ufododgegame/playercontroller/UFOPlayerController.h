@@ -27,6 +27,7 @@ protected:
 	virtual void SetupInputComponent() override;
 public:
 	void SetHUDElapseddTime(float ElapsedTime);
-	void SetHUDHealth(float Health, float MaxHealth); 
+	void SetHUDHealth(float Health, float MaxHealth);
+	void SetHUDMeteorCount(int32 Count);
 	
 };

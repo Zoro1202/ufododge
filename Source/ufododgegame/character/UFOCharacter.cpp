@@ -8,6 +8,9 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "ufododgegame/playercontroller/UFOPlayerController.h"
+#include "ufododgegame/Obstacle/Projectile.h"
+#include "ufododgegame/Obstacle/ObstaclePoolManager.h"
+#include "ufododgegame/gamestate/UFOGameState.h"
 
 AUFOCharacter::AUFOCharacter()
 {
@@ -109,7 +112,40 @@ void AUFOCharacter::UseInputReleased()
 
 void AUFOCharacter::Fire(bool Triggered)
 {
-	
+	if (Triggered)
+	{
+		SpawnBullet();
+		GetWorldTimerManager().SetTimer(FireTimerHandle, this, &AUFOCharacter::SpawnBullet, FireRate, true);
+	}
+	else
+	{
+		GetWorldTimerManager().ClearTimer(FireTimerHandle);
+	}
+}
+
+void AUFOCharacter::SpawnBullet()
+{
+	AUFOGameState* GameState = Cast<AUFOGameState>(GetWorld()->GetGameState());
+	if (!GameState || !GameState->BulletPoolManager) return;
+
+	AProjectile* Bullet = GameState->BulletPoolManager->GetPooledObstacle();
+	if (!Bullet) return;
+
+	FVector SpawnLocation = GetActorLocation() + GetActorForwardVector() * 100.f;
+	Bullet->SetActorLocationAndRotation(SpawnLocation, GetActorRotation());
+	Bullet->SetInstigator(this);
+	Bullet->Damage = BulletDamage;
+}
+
+void AUFOCharacter::HealHealth(float Amount)
+{
+	Health = FMath::Clamp(Health + Amount, 0.f, MaxHealth);
+	UpdateHUDHealth();
+}
+
+void AUFOCharacter::BoostBulletDamage(float Amount)
+{
+	BulletDamage += Amount;
 }
 
 void AUFOCharacter::UpdateHUDHealth()
@@ -152,6 +188,9 @@ void AUFOCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const clas
 
 void AUFOCharacter::Eliminated(const AController* InstigatorController)
 {
-	if (InstigatorController)
-		UE_LOG(LogTemp, Display, TEXT("Elim : Instigated by %s"), *InstigatorController->GetName());
+	AUFOGameState* GameState = Cast<AUFOGameState>(GetWorld()->GetGameState());
+	if (GameState)
+	{
+		GameState->OnPlayerEliminated();
+	}
 }

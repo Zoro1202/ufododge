@@ -20,4 +20,6 @@ public:
 	class UProgressBar* HealthProgressBar;
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* ElapseTimeText;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* MeteorCount;
 };

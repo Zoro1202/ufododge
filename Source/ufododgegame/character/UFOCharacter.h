@@ -44,6 +44,12 @@ private:
 	UInputAction* MouseAction;
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* UseAction;
+
+	/**
+	 * Niagara
+	 */
+	
+
 	
 	void MoveInput(const FInputActionValue& InputActionValue);
 	void LookInput(const FInputActionValue& InputActionValue);
@@ -53,6 +59,15 @@ private:
 	void UseInputReleased();
 	
 	void Fire(bool Triggered);
+	void SpawnBullet();
+
+	FTimerHandle FireTimerHandle;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float FireRate = 0.15f;
+
+	UPROPERTY(VisibleAnywhere, Category = "Combat")
+	float BulletDamage = 10.f;
 protected:
 	void UpdateHUDHealth();
 	void PlayHitReaction();
@@ -70,5 +85,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void HealHealth(float Amount);
+	void BoostBulletDamage(float Amount);
 
 };

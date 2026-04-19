@@ -13,12 +13,16 @@ UCLASS()
 class UFODODGEGAME_API AUFOHUD : public AHUD
 {
 	GENERATED_BODY()
+public:
+
+	UPROPERTY(EditAnywhere, Category = UI)
 	TSubclassOf<class UUserWidget> CharacterOverlayClass;
+	
+	UPROPERTY()
+	class UCharacterOverlay* CharacterOverlay;
+	
 protected:
 	virtual void BeginPlay() override;
 	
 	void AddCharacterOverlay();
-public:
-	UPROPERTY()
-	class UCharacterOverlay* CharacterOverlay;
 };

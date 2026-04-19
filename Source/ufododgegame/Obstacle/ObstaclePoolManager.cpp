@@ -35,13 +35,12 @@ void UObstaclePoolManager::InitPool()
 
 		if (Obstacle)
 		{
-			// 비활성 상태로 풀에 보관
-			
+			Obstacle->OwningPool = this;
 			Obstacle->SetActorHiddenInGame(true);
 			Obstacle->SetActorEnableCollision(false);
 			Obstacle->SetActorTickEnabled(false);
 			Obstacle->StopProjectile();
-			
+
 			ObstaclePool.Add(Obstacle);
 		}
 	}
@@ -53,7 +52,6 @@ AProjectile* UObstaclePoolManager::GetPooledObstacle()
 {
 	for (AProjectile* _Obstacle : ObstaclePool)
 	{
-		// Hidden 상태 = 비활성(사용 가능) 상태
 		if (_Obstacle && _Obstacle->IsHidden())
 		{
 			_Obstacle->SetActorHiddenInGame(false);
@@ -65,9 +63,51 @@ AProjectile* UObstaclePoolManager::GetPooledObstacle()
 		}
 	}
 
-	// 풀이 고갈된 경우 - 풀 사이즈 늘리는 것을 권장
 	UE_LOG(LogTemp, Warning, TEXT("ObstaclePoolManager: 풀 고갈! 현재 PoolSize = %d"), PoolSize);
 	return nullptr;
+}
+
+void UObstaclePoolManager::ExpandPool(int32 AdditionalCount, int32 MaxSize)
+{
+	if (!ObstacleClass) return;
+
+	int32 ToAdd = FMath::Min(AdditionalCount, MaxSize - ObstaclePool.Num());
+	if (ToAdd <= 0) return;
+
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	for (int32 i = 0; i < ToAdd; i++)
+	{
+		AProjectile* Obstacle = GetWorld()->SpawnActor<AProjectile>(
+			ObstacleClass, FVector::ZeroVector, FRotator::ZeroRotator, Params
+		);
+		if (Obstacle)
+		{
+			Obstacle->OwningPool = this;
+			Obstacle->SetActorHiddenInGame(true);
+			Obstacle->SetActorEnableCollision(false);
+			Obstacle->SetActorTickEnabled(false);
+			Obstacle->StopProjectile();
+			ObstaclePool.Add(Obstacle);
+		}
+	}
+
+	PoolSize = ObstaclePool.Num();
+	UE_LOG(LogTemp, Log, TEXT("ObstaclePoolManager: 풀 확장 → %d개"), PoolSize);
+}
+
+int32 UObstaclePoolManager::GetActiveCount() const
+{
+	int32 Count = 0;
+	for (const AProjectile* Obstacle : ObstaclePool)
+	{
+		if (Obstacle && !Obstacle->IsHidden())
+		{
+			++Count;
+		}
+	}
+	return Count;
 }
 
 void UObstaclePoolManager::ReturnToPool(AProjectile* _Obstacle)
