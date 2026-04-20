@@ -26,31 +26,60 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Player")
 	class UCameraComponent* Camera;
 	
-	UPROPERTY(VisibleAnywhere, Category = "Player")
+	UPROPERTY(EditAnywhere, Category = "Player")
+	float MaxYawRot = 30.f;
+	UPROPERTY(EditAnywhere, Category = "Player")
+	float MaxPitchRot = 30.f;
+	
+	float CurrentXSpeed = 0.f;
+	float CurrentYSpeed = 0.f;
+	
+	/**
+	 * Combat
+	 */
+	
+	UPROPERTY(VisibleAnywhere, Category = "Player|Combat")
 	float Health = 100.f;
-	UPROPERTY(VisibleAnywhere, Category = "Player")
+	UPROPERTY(VisibleAnywhere, Category = "Player|Combat")
 	float MaxHealth = 100.f;
+
+	UFUNCTION()
+	void ReceiveDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	void PlayHitReaction();
+	void UpdateHUDHealth();
+	void ToggleMenu();
+	void Eliminated(const AController* InstigatorController);
+
+	void Fire(bool Triggered);
+	void SpawnBullet();
+
+	FTimerHandle FireTimerHandle;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Player|Combat")
+	bool bCanShoot = true;
+	
+	UPROPERTY(EditAnywhere, Category = "Player|Combat")
+	float FireRate = 0.15f;
+
+	UPROPERTY(VisibleAnywhere, Category = "Player|Combat")
+	float BulletDamage = 10.f;
 	
 	/**
 	* Input
 	*/
-	UPROPERTY(EditAnywhere, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "Player|Input")
 	class UInputAction* MoveAction;
-	UPROPERTY(EditAnywhere, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "Player|Input")
 	UInputAction* LookAction;
-	UPROPERTY(EditAnywhere, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "Player|Input")
 	UInputAction* MouseLookAction;
-	UPROPERTY(EditAnywhere, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "Player|Input")
 	UInputAction* MouseAction;
-	UPROPERTY(EditAnywhere, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "Player|Input")
 	UInputAction* UseAction;
+	UPROPERTY(EditAnywhere, Category = "Player|Input")
+	UInputAction* MenuAction;
 
-	/**
-	 * Niagara
-	 */
-	
-
-	
 	void MoveInput(const FInputActionValue& InputActionValue);
 	void LookInput(const FInputActionValue& InputActionValue);
 	void MouseInput();
@@ -58,22 +87,12 @@ private:
 	void UseInputPressed();
 	void UseInputReleased();
 	
-	void Fire(bool Triggered);
-	void SpawnBullet();
+	/**
+	 * Niagara
+	 */
 
-	FTimerHandle FireTimerHandle;
-
-	UPROPERTY(EditAnywhere, Category = "Combat")
-	float FireRate = 0.15f;
-
-	UPROPERTY(VisibleAnywhere, Category = "Combat")
-	float BulletDamage = 10.f;
 protected:
-	void UpdateHUDHealth();
-	void PlayHitReaction();
-	void Eliminated(const AController* InstigatorController);
-	UFUNCTION()
-	void ReceiveDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	
 	UFUNCTION()
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -81,7 +100,6 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

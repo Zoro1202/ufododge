@@ -31,6 +31,9 @@ private:
 	class UBoxComponent* SpawnBox;
 
 	UPROPERTY(EditAnywhere, Category = "Spawn")
+	bool bIsActivate = true;
+	
+	UPROPERTY(EditAnywhere, Category = "Spawn")
 	float SpawnInterval = 2.f;
 
 	UPROPERTY(EditAnywhere, Category = "Spawn")
@@ -52,6 +55,9 @@ private:
 
 	FTimerHandle SpawnTimerHandle;
 
+	UPROPERTY()
+	class AUFOGameState* GS;
+	
 	void SpawnObstacle();
 	void SpawnSingle(const FVector& SpawnPos, const FVector& TargetPos, bool bHoming = false);
 

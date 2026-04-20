@@ -4,6 +4,7 @@
 #include "UFOHUD.h"
 
 #include "CharacterOverlay.h"
+#include "MenuOverlay.h"
 #include "Blueprint/UserWidget.h"
 
 void AUFOHUD::BeginPlay()
@@ -16,9 +17,16 @@ void AUFOHUD::BeginPlay()
 void AUFOHUD::AddCharacterOverlay()
 {
 	APlayerController* PlayerController = GetOwningPlayerController();
-	if (PlayerController && CharacterOverlayClass)
+	if (!PlayerController) return;
+	if (CharacterOverlayClass)
 	{
 		CharacterOverlay = CreateWidget<UCharacterOverlay>(PlayerController, CharacterOverlayClass);
 		CharacterOverlay->AddToViewport();
+	}
+	if (MenuOverlayClass)
+	{
+		MenuOverlay = CreateWidget<UMenuOverlay>(PlayerController, MenuOverlayClass);
+		MenuOverlay->AddToViewport(1);
+		MenuOverlay->SetVisibility(ESlateVisibility::Hidden);
 	}
 }

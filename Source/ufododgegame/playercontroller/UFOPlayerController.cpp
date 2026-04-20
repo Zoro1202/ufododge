@@ -5,13 +5,22 @@
 
 #include "CharacterOverlay.h"
 #include "EnhancedInputSubsystems.h"
+#include "MenuOverlay.h"
 #include "UFOHUD.h"
+#include "Components/Button.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "Kismet/GameplayStatics.h"
 
 void AUFOPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+	HUD = HUD == nullptr ? Cast<AUFOHUD>(GetHUD()) : HUD;
+	if (!HUD || !HUD->MenuOverlay) return;
+
+	HUD->MenuOverlay->RestartButton->OnClicked.AddDynamic(this, &AUFOPlayerController::OnRestartClicked);
+	HUD->MenuOverlay->MainButton->OnClicked.AddDynamic(this, &AUFOPlayerController::OnMainClicked);
+	HUD->MenuOverlay->ResumeButton->OnClicked.AddDynamic(this, &AUFOPlayerController::OnResumeClicked);
 }
 
 void AUFOPlayerController::SetHUDElapseddTime(float ElapsedTime)
@@ -54,7 +63,7 @@ void AUFOPlayerController::SetHUDMeteorCount(int32 Count)
 		HUD->CharacterOverlay->MeteorCount;
 	if (bHUDValid)
 	{
-		FString CountText = FString::Printf(TEXT("운석: %d"), Count);
+		FString CountText = FString::Printf(TEXT("%d"), Count);
 		HUD->CharacterOverlay->MeteorCount->SetText(FText::FromString(CountText));
 	}
 }
@@ -70,4 +79,50 @@ void AUFOPlayerController::SetupInputComponent()
 			Subsystem->AddMappingContext(CurrentContext, 0);
 		}
 	}
+}
+
+void AUFOPlayerController::ToggleMenu()
+{
+	HUD = HUD == nullptr ? Cast<AUFOHUD>(GetHUD()) : HUD;
+	if (!HUD || !HUD->MenuOverlay) return;
+	
+	bMenuActivate = !bMenuActivate;
+	
+	if (bMenuActivate)
+	{
+		HUD->MenuOverlay->SetVisibility(ESlateVisibility::Visible);
+        
+		SetInputMode(FInputModeUIOnly());
+		SetShowMouseCursor(true);
+		// SetPause(true);
+		UGameplayStatics::SetGlobalTimeDilation(this, 0.0001f);
+	}
+	else
+	{
+		HUD->MenuOverlay->SetVisibility(ESlateVisibility::Hidden);
+		
+		SetInputMode(FInputModeGameOnly());
+		SetShowMouseCursor(false);
+		// SetPause(false);
+		UGameplayStatics::SetGlobalTimeDilation(this, 1.f);
+	}
+}
+
+void AUFOPlayerController::OnResumeClicked()
+{
+	ToggleMenu();
+	UE_LOG(LogTemp, Warning, TEXT("OnResumeClicked"));
+}
+
+void AUFOPlayerController::OnRestartClicked()
+{
+	UGameplayStatics::SetGlobalTimeDilation(this, 1.f);
+	UE_LOG(LogTemp, Warning, TEXT("OnRestartClicked"));
+    ClientTravel("/Game/Asset/TreatmentStation/Map/TreatmentStationMap", TRAVEL_Absolute);
+}
+
+void AUFOPlayerController::OnMainClicked()
+{
+	UGameplayStatics::SetGlobalTimeDilation(this, 1.f);
+    ClientTravel("/Game/Asset/TreatmentStation/Map/TreatmentStationMap", TRAVEL_Absolute);
 }

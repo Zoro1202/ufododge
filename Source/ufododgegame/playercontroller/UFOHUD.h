@@ -17,9 +17,14 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = UI)
 	TSubclassOf<class UUserWidget> CharacterOverlayClass;
+	UPROPERTY(EditAnywhere, Category = UI)
+	TSubclassOf<class UUserWidget> MenuOverlayClass;
 	
 	UPROPERTY()
 	class UCharacterOverlay* CharacterOverlay;
+	
+	UPROPERTY()
+	class UMenuOverlay* MenuOverlay;
 	
 protected:
 	virtual void BeginPlay() override;

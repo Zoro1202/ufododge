@@ -20,7 +20,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Homing")
 	float HomingAcceleration = 800.f;
 
-	UPROPERTY(EditAnywhere, Category = "FX")
+	UPROPERTY(VisibleAnywhere, Category = "FX")
 	class UNiagaraSystem* HitEffect;
 
 	UPROPERTY(EditAnywhere, Category = "FX")
@@ -28,8 +28,11 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	
+	virtual void Tick(float DeltaSeconds) override;
 
 private:
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
 };

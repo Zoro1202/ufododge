@@ -14,18 +14,28 @@ class UFODODGEGAME_API AUFOPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
+protected:
+	UFUNCTION()
+	virtual void BeginPlay() override;
+	
+	virtual void SetupInputComponent() override;
+
 private:
 	UPROPERTY(EditAnywhere)
 	TArray<class UInputMappingContext*> MappingContext;
 	
 	UPROPERTY(EditAnywhere)
 	class AUFOHUD* HUD;
-protected:
-	virtual void BeginPlay() override;
+	UFUNCTION()
+	void OnResumeClicked();
+	UFUNCTION()
+	void OnRestartClicked();
+	UFUNCTION()
+	void OnMainClicked();
 	
-	
-	virtual void SetupInputComponent() override;
+	bool bMenuActivate = false;
 public:
+	void ToggleMenu();
 	void SetHUDElapseddTime(float ElapsedTime);
 	void SetHUDHealth(float Health, float MaxHealth);
 	void SetHUDMeteorCount(int32 Count);

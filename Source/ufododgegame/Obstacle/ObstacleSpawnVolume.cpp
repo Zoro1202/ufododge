@@ -33,7 +33,9 @@ void AObstacleSpawnVolume::BeginPlay()
 
 void AObstacleSpawnVolume::SpawnObstacle()
 {
-	AUFOGameState* GS = Cast<AUFOGameState>(UGameplayStatics::GetGameState(this));
+	if (!bIsActivate) return;
+	
+	GS = GS == nullptr ? Cast<AUFOGameState>(UGameplayStatics::GetGameState(this)) : GS;
 	if (!GS || !GS->ObstaclePoolManager) return;
 
 	const FVector PlayerPos = GetPlayerLocation();
@@ -43,6 +45,7 @@ void AObstacleSpawnVolume::SpawnObstacle()
 	case ESpawnPattern::ToPlayer:
 		{
 			FVector SpawnPos = GetRandomPointInVolume();
+			DrawDebugSphere(GetWorld(), SpawnPos, 1.f, 8, FColor::Red);
 			SpawnSingle(SpawnPos, PlayerPos);
 		}
 		break;
@@ -86,7 +89,8 @@ void AObstacleSpawnVolume::SpawnObstacle()
 
 void AObstacleSpawnVolume::SpawnSingle(const FVector& SpawnPos, const FVector& TargetPos, bool bHoming)
 {
-	AUFOGameState* GS = Cast<AUFOGameState>(UGameplayStatics::GetGameState(this));
+	GS = GS == nullptr ? Cast<AUFOGameState>(UGameplayStatics::GetGameState(this)) : GS;
+
 	if (!GS || !GS->ObstaclePoolManager) return;
 
 	AProjectile* Obstacle = GS->ObstaclePoolManager->GetPooledObstacle();
@@ -121,7 +125,7 @@ FVector AObstacleSpawnVolume::GetRandomPointInVolume() const
 {
 	FVector Origin = SpawnBox->GetComponentLocation();
 	FVector Extent = SpawnBox->GetScaledBoxExtent();
-
+	
 	return FVector(
 		FMath::RandRange(Origin.X - Extent.X, Origin.X + Extent.X),
 		FMath::RandRange(Origin.Y - Extent.Y, Origin.Y + Extent.Y),

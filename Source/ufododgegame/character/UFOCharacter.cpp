@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "ufododgegame/playercontroller/UFOPlayerController.h"
 #include "ufododgegame/Obstacle/Projectile.h"
@@ -33,6 +34,7 @@ AUFOCharacter::AUFOCharacter()
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECR_Block);
 	
+	Camera->SetActive(false);
 }
 
 void AUFOCharacter::BeginPlay()
@@ -62,6 +64,8 @@ void AUFOCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		
 		EnhancedInputComponent->BindAction(UseAction, ETriggerEvent::Started, this, &ThisClass::UseInputPressed);
 		EnhancedInputComponent->BindAction(UseAction, ETriggerEvent::Completed, this, &ThisClass::UseInputReleased);
+		
+		EnhancedInputComponent->BindAction(MenuAction, ETriggerEvent::Triggered, this, &AUFOCharacter::ToggleMenu);
 	}
 }
 
@@ -69,6 +73,14 @@ void AUFOCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
+	float TargetPitch = FMath::Clamp(CurrentXSpeed / GetCharacterMovement()->MaxWalkSpeed, -1.f, 1.f) * MaxPitchRot;
+	float TargetYaw  = FMath::Clamp(CurrentYSpeed / GetCharacterMovement()->MaxWalkSpeed, -1.f, 1.f) * MaxYawRot;
+
+	FRotator Current = GetMesh()->GetRelativeRotation();
+	FRotator Target  = FRotator(-TargetYaw, Current.Yaw, TargetPitch);
+	
+	FRotator Smooth = FMath::RInterpTo(Current, Target, DeltaTime, 1.f);
+	GetMesh()->SetRelativeRotation(Smooth);
 }
 
 void AUFOCharacter::MoveInput(const FInputActionValue& Value)
@@ -76,6 +88,8 @@ void AUFOCharacter::MoveInput(const FInputActionValue& Value)
 	FVector2D MovementVector = Value.Get<FVector2D>();
 	DoMove(MovementVector.X, MovementVector.Y);
 	
+	CurrentXSpeed = MovementVector.X * GetCharacterMovement()->MaxWalkSpeed;
+	CurrentYSpeed = MovementVector.Y * GetCharacterMovement()->MaxWalkSpeed;
 }
 
 void AUFOCharacter::LookInput(const FInputActionValue& Value)
@@ -156,6 +170,14 @@ void AUFOCharacter::UpdateHUDHealth()
 	
 	// WBP에 값 전달
 	PC->SetHUDHealth(Health, MaxHealth);
+}
+
+void AUFOCharacter::ToggleMenu()
+{
+	AUFOPlayerController* PC = Cast<AUFOPlayerController>(GetController());
+	if (!PC) return;
+    
+	PC->ToggleMenu();
 }
 
 void AUFOCharacter::PlayHitReaction()

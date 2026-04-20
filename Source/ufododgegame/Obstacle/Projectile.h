@@ -11,11 +11,10 @@ class UFODODGEGAME_API AProjectile : public AActor
 {
 	GENERATED_BODY()
 
-private:
+protected:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* StaticMesh;
-
-protected:
+	
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* HitBox;
 
