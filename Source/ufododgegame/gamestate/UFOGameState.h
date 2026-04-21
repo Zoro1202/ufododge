@@ -38,17 +38,30 @@ public:
 	void OnPlayerEliminated();
 	float GetSurvivalTime() const { return SurvivalTime; }
 
+	UPROPERTY(EditAnywhere, Category = "Sequence")
+	class ULevelSequence* IntroSequence;
+	
 protected:
 	virtual void BeginPlay() override;
+	void PlayIntroSequence();
+	UFUNCTION()
+	void OnDeathSequenceFinished();
+	UFUNCTION()
+	void OnIntroSequenceFinished();
+	void SetGameActive(bool bActive);
 	virtual void Tick(float DeltaTime) override;
 
 private:
+	UPROPERTY()
+	class AUFOPlayerController* PC;
+	
 	bool bGameOver = false;
+	
+    bool bGameActive = false;
 
 	FTimerHandle PoolGrowthTimerHandle;
 
 	void ExpandObstaclePool();
 
-	UFUNCTION()
-	void OnDeathSequenceFinished();
+	
 };

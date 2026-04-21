@@ -22,17 +22,23 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "FX")
 	class UNiagaraSystem* HitEffect;
-
+	
 	UPROPERTY(EditAnywhere, Category = "FX")
 	float HitEffectDuration = 2.f;
-
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Pickup")
+	TSubclassOf<AActor> PickupClass;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Pickup")
+	float PickupSpawnChance = 0.3f;  // 30% 확률
+	
+	virtual auto Tick(float DeltaSeconds) -> void override;
 protected:
 	virtual void BeginPlay() override;
 	
-	virtual void Tick(float DeltaSeconds) override;
 
 private:
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	
+	void TrySpawnPickup();
 };

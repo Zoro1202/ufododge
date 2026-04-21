@@ -14,7 +14,11 @@ class UFODODGEGAME_API AUFOHUD : public AHUD
 {
 	GENERATED_BODY()
 public:
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnOverlayReady);
 
+	UPROPERTY()
+	FOnOverlayReady OnOverlayReady;
+	
 	UPROPERTY(EditAnywhere, Category = UI)
 	TSubclassOf<class UUserWidget> CharacterOverlayClass;
 	UPROPERTY(EditAnywhere, Category = UI)

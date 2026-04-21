@@ -12,7 +12,7 @@
 AObstacleSpawnVolume::AObstacleSpawnVolume()
 {
 	PrimaryActorTick.bCanEverTick = false;
-
+	
 	SpawnBox = CreateDefaultSubobject<UBoxComponent>(TEXT("SpawnBox"));
 	RootComponent = SpawnBox;
 	SpawnBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -21,7 +21,7 @@ AObstacleSpawnVolume::AObstacleSpawnVolume()
 void AObstacleSpawnVolume::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	GetWorldTimerManager().SetTimer(
 		SpawnTimerHandle,
 		this,
@@ -31,10 +31,21 @@ void AObstacleSpawnVolume::BeginPlay()
 	);
 }
 
+void AObstacleSpawnVolume::SetSpawnActive(bool bActive)
+{
+	if (bActive)
+	{
+		GetWorldTimerManager().SetTimer(SpawnTimerHandle, this,
+			&AObstacleSpawnVolume::SpawnObstacle, SpawnInterval, true);
+	}
+	else
+	{
+		GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
+	}
+}
+
 void AObstacleSpawnVolume::SpawnObstacle()
 {
-	if (!bIsActivate) return;
-	
 	GS = GS == nullptr ? Cast<AUFOGameState>(UGameplayStatics::GetGameState(this)) : GS;
 	if (!GS || !GS->ObstaclePoolManager) return;
 
@@ -45,7 +56,6 @@ void AObstacleSpawnVolume::SpawnObstacle()
 	case ESpawnPattern::ToPlayer:
 		{
 			FVector SpawnPos = GetRandomPointInVolume();
-			DrawDebugSphere(GetWorld(), SpawnPos, 1.f, 8, FColor::Red);
 			SpawnSingle(SpawnPos, PlayerPos);
 		}
 		break;

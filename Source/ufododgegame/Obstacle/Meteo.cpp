@@ -8,12 +8,14 @@
 #include "Engine/DamageEvents.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "PlayerBullet.h"
 
 AMeteo::AMeteo()
 {
-	
+	HitBox->SetCollisionObjectType(ECC_GameTraceChannel2);
+	HitBox->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
+	HitBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	HitEffect = CreateDefaultSubobject<UNiagaraSystem>(TEXT("HitParticle"));
-	// /Game/MsvFx_Niagara_Explosion_Pack_01/Prefabs/Niagara_Explosion_02.Niagara_Explosion_03
 	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> FX(TEXT("/Game/MsvFx_Niagara_Explosion_Pack_01/Prefabs/Niagara_Explosion_08"));
 	if (FX.Succeeded()) HitEffect = FX.Object;
 	
@@ -35,22 +37,27 @@ void AMeteo::Tick(float DeltaSeconds)
 }
 
 void AMeteo::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+							UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!OtherActor || Cast<AProjectile>(OtherActor)) return;
+	if (!OtherActor || Cast<AMeteo>(OtherActor)) return;
 
+	if (APlayerBullet* Bullet = Cast<APlayerBullet>(OtherActor))
+	{
+		if (HitEffect)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect,
+				GetActorLocation(), FRotator(90.f, 0.f, 0.f), FVector(0.01f));
+		}
+		TrySpawnPickup();
+		Bullet->OnOutOfBounds();
+		OnOutOfBounds();
+		return;
+	}
 	if (HitEffect)
 	{
-		GEngine->AddOnScreenDebugMessage(
-			2,
-			1.f,
-			FColor::Red,
-			FString::Printf(TEXT("%d"), HitEffect->IsLooping())
-		);
 		FVector ImpactPoint = GetActorLocation();
 		FRotator SpawnRot = FRotator(90.f, 0.f, 0.f);
-		UWorld* World = GetWorld();
-		if (World)
+		if (UWorld* World = GetWorld())
 		{
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(World, HitEffect, ImpactPoint, SpawnRot, FVector(0.01f));
 		}
@@ -58,7 +65,17 @@ void AMeteo::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 
 	FDamageEvent DamageEvent;
 	OtherActor->TakeDamage(Damage, DamageEvent, GetInstigatorController(), this);
+
+	TrySpawnPickup();
 	OnOutOfBounds();
+}
+
+void AMeteo::TrySpawnPickup()
+{
+	if (!PickupClass) return;
+	if (FMath::RandRange(0.f, 1.f) > PickupSpawnChance) return;
+
+	GetWorld()->SpawnActor<AActor>(PickupClass, GetActorLocation(), FRotator::ZeroRotator);
 }
 
 void AMeteo::EnableHoming(USceneComponent* TargetComponent)

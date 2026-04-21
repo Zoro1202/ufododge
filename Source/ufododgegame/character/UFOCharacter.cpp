@@ -73,8 +73,8 @@ void AUFOCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	float TargetPitch = FMath::Clamp(CurrentXSpeed / GetCharacterMovement()->MaxWalkSpeed, -1.f, 1.f) * MaxPitchRot;
-	float TargetYaw  = FMath::Clamp(CurrentYSpeed / GetCharacterMovement()->MaxWalkSpeed, -1.f, 1.f) * MaxYawRot;
+	float TargetPitch = FMath::Clamp(CurrentXSpeed, -1.f, 1.f) * MaxPitchRot;
+	float TargetYaw  = FMath::Clamp(CurrentYSpeed, -1.f, 1.f) * MaxYawRot;
 
 	FRotator Current = GetMesh()->GetRelativeRotation();
 	FRotator Target  = FRotator(-TargetYaw, Current.Yaw, TargetPitch);
@@ -88,8 +88,8 @@ void AUFOCharacter::MoveInput(const FInputActionValue& Value)
 	FVector2D MovementVector = Value.Get<FVector2D>();
 	DoMove(MovementVector.X, MovementVector.Y);
 	
-	CurrentXSpeed = MovementVector.X * GetCharacterMovement()->MaxWalkSpeed;
-	CurrentYSpeed = MovementVector.Y * GetCharacterMovement()->MaxWalkSpeed;
+	CurrentXSpeed = MovementVector.X;
+	CurrentYSpeed = MovementVector.Y;
 }
 
 void AUFOCharacter::LookInput(const FInputActionValue& Value)

@@ -17,8 +17,11 @@ class UFODODGEGAME_API AUFOPlayerController : public APlayerController
 protected:
 	UFUNCTION()
 	virtual void BeginPlay() override;
-	
+
 	virtual void SetupInputComponent() override;
+
+	UFUNCTION()
+	void BindMenuButtons();
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -39,5 +42,6 @@ public:
 	void SetHUDElapseddTime(float ElapsedTime);
 	void SetHUDHealth(float Health, float MaxHealth);
 	void SetHUDMeteorCount(int32 Count);
+	void ShowDeathScreen(float Score);
 	
 };

@@ -17,11 +17,15 @@ AProjectile::AProjectile()
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	StaticMesh->SetupAttachment(RootComponent);
 
+	
 	HitBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	HitBox->SetCollisionObjectType(ECC_WorldDynamic);
 	HitBox->SetCollisionResponseToAllChannels(ECR_Ignore);
 	HitBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	HitBox->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
+	
+	HitBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+	HitBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	HitBox->SetGenerateOverlapEvents(true);
 
 	StaticMesh->SetCollisionResponseToAllChannels(ECR_Ignore);

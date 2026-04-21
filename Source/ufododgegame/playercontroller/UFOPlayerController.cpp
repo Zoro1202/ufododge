@@ -16,11 +16,49 @@ void AUFOPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	HUD = HUD == nullptr ? Cast<AUFOHUD>(GetHUD()) : HUD;
+	UE_LOG(LogTemp, Warning, TEXT("HUD: %s"), HUD ? TEXT("Valid") : TEXT("nullptr"));
+	UE_LOG(LogTemp, Warning, TEXT("MenuOverlay: %s"), 
+		(HUD && HUD->MenuOverlay) ? TEXT("Valid") : TEXT("nullptr"));
+	
+	// MenuOverlay가 이미 있으면 바로 바인딩
+	if (HUD->MenuOverlay)
+	{
+		BindMenuButtons();
+		return;
+	}
+
+	// 없으면 준비될 때까지 대기
+	HUD->OnOverlayReady.AddDynamic(this, &AUFOPlayerController::BindMenuButtons);
+}
+
+void AUFOPlayerController::BindMenuButtons()
+{
+	HUD = HUD == nullptr ? Cast<AUFOHUD>(GetHUD()) : HUD;
 	if (!HUD || !HUD->MenuOverlay) return;
 
-	HUD->MenuOverlay->RestartButton->OnClicked.AddDynamic(this, &AUFOPlayerController::OnRestartClicked);
-	HUD->MenuOverlay->MainButton->OnClicked.AddDynamic(this, &AUFOPlayerController::OnMainClicked);
-	HUD->MenuOverlay->ResumeButton->OnClicked.AddDynamic(this, &AUFOPlayerController::OnResumeClicked);
+	HUD->MenuOverlay->RestartButton->OnReleased.AddDynamic(this, &AUFOPlayerController::OnRestartClicked);
+	HUD->MenuOverlay->MainButton->OnReleased.AddDynamic(this, &AUFOPlayerController::OnMainClicked);
+	HUD->MenuOverlay->ResumeButton->OnReleased.AddDynamic(this, &AUFOPlayerController::OnResumeClicked);
+
+	UE_LOG(LogTemp, Warning, TEXT("MenuButtons Bound"));
+}
+
+void AUFOPlayerController::ShowDeathScreen(float Score)
+{
+	HUD = HUD == nullptr ? Cast<AUFOHUD>(GetHUD()) : HUD;
+	if (!HUD || !HUD->MenuOverlay) return;
+
+	HUD->MenuOverlay->MenuText->SetText(FText::FromString(TEXT("RE?")));
+	HUD->MenuOverlay->ScoreText->SetText(
+		FText::FromString(FString::Printf(TEXT("기록 : %.2fs"), Score))
+	);
+	HUD->MenuOverlay->ResumeButton->SetVisibility(ESlateVisibility::Collapsed);
+	HUD->MenuOverlay->SetVisibility(ESlateVisibility::Visible);
+
+	FInputModeUIOnly InputMode;
+	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+	SetInputMode(InputMode);
+	SetShowMouseCursor(true);
 }
 
 void AUFOPlayerController::SetHUDElapseddTime(float ElapsedTime)
@@ -86,20 +124,26 @@ void AUFOPlayerController::ToggleMenu()
 	HUD = HUD == nullptr ? Cast<AUFOHUD>(GetHUD()) : HUD;
 	if (!HUD || !HUD->MenuOverlay) return;
 	
+	HUD->MenuOverlay->MenuText->SetText(FText::FromString(TEXT("MENU")));
+	HUD->MenuOverlay->ResumeButton->SetVisibility(ESlateVisibility::Visible);
+	HUD->MenuOverlay->ScoreText->SetVisibility(ESlateVisibility::Collapsed);
+	
 	bMenuActivate = !bMenuActivate;
 	
 	if (bMenuActivate)
 	{
 		HUD->MenuOverlay->SetVisibility(ESlateVisibility::Visible);
         
-		SetInputMode(FInputModeUIOnly());
+		FInputModeUIOnly InputMode;
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		SetInputMode(InputMode);
 		SetShowMouseCursor(true);
 		// SetPause(true);
 		UGameplayStatics::SetGlobalTimeDilation(this, 0.0001f);
 	}
 	else
 	{
-		HUD->MenuOverlay->SetVisibility(ESlateVisibility::Hidden);
+		HUD->MenuOverlay->SetVisibility(ESlateVisibility::Collapsed);
 		
 		SetInputMode(FInputModeGameOnly());
 		SetShowMouseCursor(false);
@@ -117,6 +161,8 @@ void AUFOPlayerController::OnResumeClicked()
 void AUFOPlayerController::OnRestartClicked()
 {
 	UGameplayStatics::SetGlobalTimeDilation(this, 1.f);
+	SetInputMode(FInputModeGameOnly());
+	SetShowMouseCursor(false);
 	UE_LOG(LogTemp, Warning, TEXT("OnRestartClicked"));
     ClientTravel("/Game/Asset/TreatmentStation/Map/TreatmentStationMap", TRAVEL_Absolute);
 }
@@ -124,5 +170,7 @@ void AUFOPlayerController::OnRestartClicked()
 void AUFOPlayerController::OnMainClicked()
 {
 	UGameplayStatics::SetGlobalTimeDilation(this, 1.f);
+	SetInputMode(FInputModeGameOnly());
+	SetShowMouseCursor(false);
     ClientTravel("/Game/Asset/TreatmentStation/Map/TreatmentStationMap", TRAVEL_Absolute);
 }

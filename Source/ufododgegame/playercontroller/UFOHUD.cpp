@@ -18,15 +18,19 @@ void AUFOHUD::AddCharacterOverlay()
 {
 	APlayerController* PlayerController = GetOwningPlayerController();
 	if (!PlayerController) return;
+
 	if (CharacterOverlayClass)
 	{
 		CharacterOverlay = CreateWidget<UCharacterOverlay>(PlayerController, CharacterOverlayClass);
 		CharacterOverlay->AddToViewport();
 	}
+
 	if (MenuOverlayClass)
 	{
 		MenuOverlay = CreateWidget<UMenuOverlay>(PlayerController, MenuOverlayClass);
 		MenuOverlay->AddToViewport(1);
-		MenuOverlay->SetVisibility(ESlateVisibility::Hidden);
+		MenuOverlay->SetVisibility(ESlateVisibility::Collapsed);
 	}
+
+	OnOverlayReady.Broadcast();
 }
